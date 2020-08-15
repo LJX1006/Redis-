@@ -108,13 +108,107 @@ get db
 getset db mongodb  
 get db
 
-3.List:  
+3.List:   
+在redis里将list玩儿成栈、队列  
+LPUSH list one    将一个值或多个值插入列表头部
+LPUSH list two  
+LPUSH list three  
+LRANGE list 0 -1  
+RPUSH list four  将一个值插入列表尾部
+LRANGE list 0 -1  
+Lpop list  
+Rpop list
+***************  
+lindex list 1  
+lindex list 0  通过下标获取List中的某一个值  
+Llen list  
+移除指定的值：  
+lrem list 1 one 
+lrem list 2 three  
+ltrim list 1 2  截断操作  
+rpoplpush list otherlist  移除列表最后一个元素并将其移动到新的列表中otherlist  
+***************  
+lpush list value  
+lset list 0 item  
+lrange list 0 -1  
+***************  
+lpush mylist "world"  
+linsert mylist before "world" "other"  
+linsert mylist after "other" "new"  
 4.Set:  
+sadd myset "hello"  
+sadd myset "world"  
+SMEMBERS  
+SISMEMBER myset "hello"  
+scard myset  获取集合中的元素个数  
+srem myset "hello"  
+SRANDMEMBER myset 随机抽选集合中的元素  
+spop myset 随机移除一个元素  
+****************  
+sadd myset1 "hello"
+sadd myset2 "world"  
+smove myset1 myset2 "hello"  移动指定元素到另一个集合中  
+差集：SDIFF myset1 myset2  
+交集: SINTER myset1 myset2  
+并集：SUNION myset1 myset2  
 5.Hash:  
+key-Map  
+hset myhash field1 lian  
+hget myhash field1  
+hmset myhash field1 hello field2 world  
+hmget myhash field1 field2  
+hgetall myhash  
+hdel myhash field1 删除hash指定的key字段  
+HEXISTS myhash field1  
+hkeys myhash  
+hvals myhash  
+HINCREBY myhash field2 1  
+hsetnx myhash field2 world  
+hash更适合对象存储，Strinf更适合字符串存储 
 6.Zset:  
-
+有序集合  
+zadd myset 1 one   
+zadd myset 2 two 3 three  
+ZRANGE myset 0 -1  
+******************  
+zadd salary 2500 xiaohong  
+zadd salary 5000 zhangsan  
+zadd salary 500 kaungshen  
+ZRANEGBYSCORE salary -inf +inf  排序  
+ZRANGEBYSCORE salary -inf +inf withscores  
+zrem salary xiaohong  
+zcount myset 1 3  
 ## 三种特殊数据类型
 1.geospatial:  
+地理位置  
+推算地理位置信息、两地之间的距离、方圆几里的人  
+geoadd china:city 116.40 39.90 beijing  
+geoadd china:city 121.47 31.23 shanghai  （维度、经度、名称）
+geoadd china:city 106.50 29.53 chongqing 114.05 22.52 shenzhen  
+GEOPOS china:city beijing  获取指定城市的经度和纬度  
+GEODIST china:city beijing shanghai  km  返回两个给定位置之间的距离   
+georadius china:city 110 30 500 km withdist(withcoord) 以给定的经纬度为中心，找出某一半径内的元素  
+georadiusbymember china:city shanghai 400 km  找出位于指定范围内的元素，中心点是由给定的位置元素决定  
+geohash  china:city beijing chongqing 返回一个或多个位置元素的geobash表示  
+****GEO的底层实现原理就是Zset，可以使用Zset命令来操作geo****  
+
 2.hyperloglog:  
+基数（不重复的元素）  
+PFadd mykey a b c d e f   
+PFcount mykey  
+PFadd mykey1 i j m k n b  
+PFMERGE mykey3 mykey mykey1  
+PFcount mykey3  
+
 3.bitmaps:  
+位存储  
+setbit sign 0 1  
+setbit sign 1 0  
+setbit sign 2 0  
+...  (打卡周一到周日)  
+查看某一天是否打卡  
+getbit sign 3  
+统计打卡的天数  
+bitcount sign  
+
 
